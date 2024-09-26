@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<!-- Defines the document type as HTML5 -->
+<html lang="en">
+<!-- Opens the HTML element and declares the language as English -->
+
+<head>
+  <!-- Metadata section that contains page settings and external links -->
+  
+  <!-- Defines the character encoding as UTF-8 (supports a wide range of characters) -->
+  <meta charset="UTF-8">
+  
+  <!-- Makes the web page responsive, adjusts the layout based on the screen size of the device -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- Sets the title of the webpage that appears on the browser tab -->
+  <title>QR Code PDF Generator</title>
+  
+  <!-- Internal CSS styling to format the page -->
+  <style>
+    /* Styles for the body element */
+    body {
+      background-color: #059ac7; /* Sets a light blue background color */
+      font-family: Arial, sans-serif; /* Sets the font family */
+      text-align: center; /* Centers the text and elements horizontally */
+      margin-top: 50px; /* Adds 50px margin at the top */
+    }
+
+    /* Styles the canvas element (where the QR code will be displayed) */
+    #qr-canvas {
+      margin: 20px auto; /* Adds 20px margin on top and bottom, centers horizontally */
+    }
+
+    /* Styles the text input field */
+    #text-input {
+      width: 350px; /* Sets the width of the input field */
+      height: 20px; /* Sets the height of the input field */
+      padding: 10px; /* Adds padding inside the input field */
+    }
+
+    /* Styles for the buttons */
+    .btn {
+      margin: 20px; /* Adds margin around the button */
+      padding: 10px 20px; /* Adds padding inside the button */
+      background-color: #007BFF; /* Sets the button background color to blue */
+      color: white; /* Sets the button text color to white */
+      border: none; /* Removes the border */
+      cursor: pointer; /* Changes the cursor to a pointer when hovered */
+      border-radius: 5%; /* Rounds the corners of the button */
+    }
+
+    /* Changes the button style when hovered */
+    .btn:hover {
+      color: beige; /* Changes the button text color to beige when hovered */
+      background-color: black; /* Changes the background to black when hovered */
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Content of the web page -->
+  
+  <!-- Main header of the page -->
+  <h1>QR Code to PDF Generator</h1>
+  
+  <!-- Input field for entering the text to generate the QR code or PDF -->
+  <input type="text" id="text-input" placeholder="Enter your text to generate qr or pdf">
+  
+  <br><br>
+  <!-- Adds two line breaks for spacing -->
+
+  <!-- Canvas element where the QR code will be displayed -->
+  <canvas id="qr-canvas"></canvas>
+  
+  <br>
+  <!-- Adds a line break for spacing -->
+
+  <!-- Button to generate the QR code -->
+  <button class="btn" onclick="generateQR()">Generate QR Code</button>
+  
+  <!-- Button to generate the PDF with the QR code -->
+  <button class="btn" onclick="generatePDF()">Download PDF</button>
+
+  <!-- External script that imports the QRious library for generating QR codes -->
+  <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+
+  <!-- External script that imports the jsPDF library for PDF generation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script>
+    let qr; // Declare a variable to hold the QRious object
+    
+    // Function to generate the QR code
+    function generateQR() {
+      // Get the text input value entered by the user
+      const input = document.getElementById('text-input').value;
+
+      // Create a new instance of the QRious library to generate the QR code
+      qr = new QRious({
+        element: document.getElementById('qr-canvas'), // The canvas element where the QR code will be displayed
+        size: 200, // Size of the QR code (200px by 200px)
+        value: input // The input text to be encoded as a QR code
+      });
+    }
+
+    // Function to generate a PDF containing the QR code
+    function generatePDF() {
+      // Get the jsPDF library's jsPDF class for creating a PDF
+      const { jsPDF } = window.jspdf;
+      
+      // Create a new PDF document
+      const doc = new jsPDF();
+      
+      // (Optional) Add the input text to the PDF (currently commented out)
+      // const inputText = document.getElementById('text-input').value;
+      // doc.text(inputText, 10, 10); // Adds text to the PDF at position (10, 10)
+
+      // Get the QR code as a base64-encoded PNG image from the canvas
+      const qrCanvas = document.getElementById('qr-canvas');
+      const qrImage = qrCanvas.toDataURL("image/png");
+
+      // Add the QR code image to the PDF at position (10, 20) with a size of 50x50
+      doc.addImage(qrImage, 'PNG', 10, 20, 50, 50);
+
+      // Save the generated PDF with the filename "qr_code.pdf"
+      doc.save("qr_code.pdf");
+    }
+  </script>
+</body>
+</html>
